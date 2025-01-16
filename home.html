@@ -1,0 +1,103 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Drone Delivery Insurance</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+  <style>
+    body {
+      background-color: #f0f0f0; /* Light gray background */
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+
+    .container {
+      background-color: #fff;
+      border-radius: 10px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      padding: 40px;
+      width: 400px;
+    }
+
+    h1 {
+      color: #333;
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    .form-label {
+      color: #666;
+    }
+
+    .btn-primary {
+      background-color: #4CAF50; /* Green */
+      border: none;
+    }
+
+    #result {
+      margin-top: 20px;
+      padding: 15px;
+      border: 1px solid #ccc;
+      border-radius: 3px;
+      background-color: #f9f9f9;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Drone Delivery Insurance</h1>
+    <form>
+      <div class="mb-3">
+        <label for="distance" class="form-label">Distance (km):</label>
+        <input type="number" id="distance" name="distance" class="form-control" placeholder="Enter distance">
+      </div>
+      <div class="mb-3">
+        <label for="value" class="form-label">Package Value:</label>
+        <input type="number" id="value" name="value" class="form-control" placeholder="Enter value">
+      </div>
+      <button type="submit" class="btn btn-primary">Get Quote</button>
+    </form>
+
+    <div id="result" class="alert alert-success mt-3" role="alert"></div> 
+
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+
+
+    const form = document.querySelector('form');
+    const resultDiv = document.getElementById('result');
+
+    form.addEventListener('submit', async (event) => {
+      event.preventDefault();
+
+      const distance = parseFloat(document.getElementById('distance').value);
+      const value = parseFloat(document.getElementById('value').value);
+
+      try {
+        const response = await fetch('http://localhost:3001/orders', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ distance, value })
+        });
+
+        const data = await response.json();
+        resultDiv.innerHTML = `
+          <p>Risk Factor: ${data.risk}</p>
+          <p>Premium: ${data.premium.toFixed(2)}</p>
+        `;
+
+      } catch (error) {
+        console.error('Error:', error);
+        resultDiv.innerHTML = '<p>An error occurred.</p>';
+      }
+    });
+  </script>
+</body>
+</html>
